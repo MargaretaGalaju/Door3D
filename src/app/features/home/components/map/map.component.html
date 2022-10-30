@@ -1,0 +1,9 @@
+<div class="engine-wrapper">
+  <canvas #rendererCanvas id="renderCanvas"></canvas>
+</div>
+
+<app-faculty-details></app-faculty-details>
+
+<div *ngIf="isLoading | async" class="loader w-100 h-100 d-flex justify-content-center ">
+  <mat-spinner></mat-spinner>
+</div>

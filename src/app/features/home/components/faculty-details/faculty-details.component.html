@@ -1,0 +1,86 @@
+<div class="right-panel p-4" [ngClass]="{readonly: readonly}">
+  <div class="rotate" (click)="switchView()">
+    <img src="assets/rotate-icon.webp" alt="rotate" width="150">
+  </div>
+</div>
+
+<div class="faculty-info p-4" [ngClass]="{readonly: readonly}">
+  <div class="d-flex align-items-center door-size">
+    <mat-label>Door Width (mm)</mat-label>
+    <input matInput type="number" [max]="9999" [(ngModel)]="doorWidth" (blur)="onDoorWidthChange($event.srcElement.value)">
+
+    <mat-slider [min]="doorWidthLimit.min" [max]="doorWidthLimit.max" [(ngModel)]="doorWidth" [thumbLabel]="true" (input)="onDoorWidthChange($event.value)">
+    </mat-slider>
+  </div>
+
+  <div class="d-flex align-items-center door-size">
+    <mat-label>Door Height (mm)</mat-label>
+    <input matInput type="number" [(ngModel)]="doorHeight" (blur)="onDoorHeightChange($event.srcElement.value)">
+        
+    <mat-slider [min]="doorHeightLimit.min" [max]="doorHeightLimit.max"  [(ngModel)]="doorHeight" [thumbLabel]="true" (input)="onDoorHeightChange($event.value)">
+    </mat-slider>
+  </div>
+
+  <div class="row mt-4 mb-4 ">
+    <div class="col-9 d-flex flex-column align-items-center">
+      <div class="d-flex align-items-center mb-3 w-100">
+        <mat-label>Opening</mat-label>
+    
+        <mat-button-toggle-group class="flex-1 w-100 ml-2" name="opening" [value]="'right'" (change)="onOpeningChange($event)">
+          <mat-button-toggle class="flex-1" value="left">Left</mat-button-toggle>
+          <mat-button-toggle class="flex-1" value="right">Right</mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+  
+      <div class="d-flex align-items-center w-100">
+        <mat-button-toggle-group class="w-100" name="openingSide" [value]="'outside'" (change)="onOpeningSideChange($event)">
+          <mat-button-toggle class="flex-1" value="outside">Outside opening</mat-button-toggle>
+          <mat-button-toggle class="flex-1" value="inside">Inside opening</mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+    </div>
+
+    <div class="col-3 pl-0 d-flex align-items-center">
+      <div class="opening w-100">
+        <img src="assets/open-door.webp" title="Toggle opening" width="80px" alt="open" (click)="toggleDoorOpening()">
+      </div>
+    </div>
+  </div>
+
+  <mat-checkbox class="example-margin mb-4"
+                (change)="onChangeLight($event.checked)">
+    <mat-label>Hide spot light</mat-label>
+            
+  </mat-checkbox>
+
+  <div class="d-flex row-colors">
+    <mat-form-field class="flex-1 mr-2" appearance="fill">
+      <label>Culoarea manerului</label>
+      
+      <input matInput type="color" (change)="culoareaManeruluiChange($event)">
+    </mat-form-field>
+
+    <mat-form-field class="flex-1" appearance="fill">
+      <label>Culoarea ramei</label>
+      
+      <input matInput type="color" (change)="culoareaRameiChange($event)">
+    </mat-form-field>
+  </div>
+
+  <mat-form-field appearance="fill">
+    <label>Culoarea usei</label>
+    
+    <input matInput type="color"  [value]="'#0a0a0a'" (change)="culoareaFerestreiChange($event)">
+  </mat-form-field>
+
+
+  <mat-form-field appearance="fill">
+    <mat-label>Texturi</mat-label>
+    
+    <mat-select (selectionChange)="onTextureChange($event)" panelClass="test">
+      <mat-option *ngFor="let texture of texturi; let index=index" [value]="texture">
+        {{ index }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>

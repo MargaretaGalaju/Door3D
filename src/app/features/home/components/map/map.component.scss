@@ -1,0 +1,15 @@
+@import 'variables';
+
+.engine-wrapper {
+  background-color: #D3DBE5;
+  width: 100%;
+  height: 100%;
+
+}
+
+.loader {
+  position: absolute;
+  top: 0;
+  background-color: rgba(128, 128, 128, 0.151);
+  align-items: center;
+}

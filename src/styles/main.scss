@@ -1,0 +1,72 @@
+// External styles
+@use '@angular/material' as mat;
+@import '~@angular/material/theming';
+@import 'node_modules/bootstrap/scss/bootstrap.scss';
+@include mat-core();
+
+// Local variables and mixins
+@import 'variables';
+@import 'mixins';
+
+// Components
+@import 'components/login';
+@import 'components/button';
+@import 'components/input';
+@import 'components/dialog';
+@import 'components/dropdown';
+
+@import 'fonts';
+
+$my-app-primary: mat-palette($mat-purple);
+$my-app-accent: mat-palette($mat-pink, A200, A100, A400);
+$my-app-theme: mat-light-theme($my-app-primary, $my-app-accent);
+@include angular-material-theme($my-app-theme);
+
+* {
+  font-family: Quicksand;
+}
+
+.cdk-overlay-container, .cdk-overlay-pane {
+  z-index: 99999999 !important;
+}
+
+input[type="date"]::-webkit-inner-spin-button,
+input[type="date"]::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
+}
+
+input[type=date]::-webkit-datetime-edit, ::placeholder {
+  color: $borders-color;
+}
+
+.mat-horizontal-content-container {
+  background-color: white;
+    border-radius: 15px;
+    margin: 0 10px;
+}
+
+html, body, app-root  {
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+mat-tab-group {
+  min-height: 300px;
+
+  .mat-tab-body-wrapper {
+    flex: 1;
+  }
+}
+
+mat-icon {
+  cursor: pointer;
+}
+
+body {
+  background-color: $mainBgColor;
+  color: $mainTextColor;
+}

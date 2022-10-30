@@ -1,0 +1,37 @@
+button {
+  outline: none;
+  border-radius: 3px;
+  padding: 8px 15px;
+  font-size: 14px;
+  font-weight: bold;
+  height: 40px;
+  white-space: nowrap;
+
+  &.primary {
+    border: 1px solid #7452A9;
+    background: linear-gradient(173deg, #7452A9 22%, #DD70CD 109%);;
+    color: white;
+  }
+
+  &.secondary {
+    border: 1px solid white;
+    background-color: transparent;
+    color: white;
+
+    &.colored {
+      border: 1px solid #7452A9;
+      background-color: transparent;
+      color: #7452A9;
+    }
+
+    &.bck {
+      background: linear-gradient(173deg, #ae85ee 22%, #DD70CD 109%);
+    }
+  }
+
+  &.custom {
+    border: 1px solid white;
+    background: linear-gradient(173deg, #ae85ee 22%, #DD70CD 109%);
+    color: white;
+  }
+}
