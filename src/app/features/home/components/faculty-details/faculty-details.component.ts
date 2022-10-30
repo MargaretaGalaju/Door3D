@@ -19,7 +19,7 @@ export enum ManerPositions {
 }
 
 @Component({
-  selector: 'app-faculty-details',
+  selector: 'app-door-config-sidebar',
   templateUrl: './faculty-details.component.html',
   styleUrls: ['./faculty-details.component.scss'],
   animations: [
@@ -144,7 +144,6 @@ export class FacultyDetailsComponent implements OnInit {
 
   public onOpeningSideChange(event){
     this.engineService.onOpeningSideChange(event.value);
-
   }
 
   public onDoorWidthChange(event) {

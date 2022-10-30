@@ -5,16 +5,11 @@ import { Image3DLoaderService } from './3d-image-loader.service';
 import { first } from 'rxjs/operators';
 import { frameArea } from '../../../shared/utils/utils.helper';
 import { FacultyInfoService } from '../faculty-info.service';
-import { MathUtils, Vector3 } from 'three';
+import { Vector3 } from 'three';
 import { Faculty } from 'src/app/shared/models/faculty.model';
 import { LoadingService } from '../loading.service';
-import { ManerPositions } from 'src/app/features/home/components/faculty-details/faculty-details.component';
 import { addAmbientLight, addDirectionalLight } from '../helpers/light.helper';
 
-
-enum Positions {
-  right, left, top, bottom
-}
 @Injectable()
 export class EngineService {
   public canvas: HTMLCanvasElement;
@@ -89,26 +84,30 @@ export class EngineService {
   pereteSus;
   pereteLeft;
   pereteRight;
+  groundTexture;
   
   constructor(
     private readonly ngZone: NgZone,
     private readonly facultyInfoService: FacultyInfoService,
     private readonly objectLoader: Image3DLoaderService,
     private readonly loadingService: LoadingService,
-  ) {  }
+  ) { }
 
   public createScene(canvas: ElementRef<HTMLCanvasElement>, isRecommendationsPage?:boolean): void {
     this.canvas = canvas.nativeElement;
     this.isRecommendationsPage = isRecommendationsPage;
+    this.manager = new THREE.LoadingManager();
+    this.groundTexture = new THREE.TextureLoader(this.manager).load('assets/textures/grass.jpg');
+    
+    this.manager.onLoad = ( ) => {
+      this.addGround();
+      this.loadingService.stopLoading();
+    };
     
     this.initSceneConfigurations();
-    
     this.addDoor();
-    this.addGround();
     this.render();
     this.animate();
-
-    this.loadingService.stopLoading();
   }
 
   public initSceneConfigurations(): void {
@@ -122,8 +121,6 @@ export class EngineService {
 
     this.renderer.setSize( window.innerWidth, window.innerHeight );
     this.renderer.outputEncoding = THREE.sRGBEncoding;
-    // this.renderer.domElement.addEventListener('mousemove', this.onMouseMove.bind(this));
-    // this.renderer.domElement.addEventListener('click', this.onMouseDown.bind(this));
     
     this.renderer.shadowMap.enabled = true;
     this.renderer.localClippingEnabled = true;
@@ -182,12 +179,11 @@ export class EngineService {
   }
 
   public addGround() {
-    const groundTexture = new THREE.TextureLoader().load('assets/textures/grass.jpg');
-    groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping   
-    groundTexture.repeat.set( 50, 50 )
-    groundTexture.anisotropy = 16
+    this.groundTexture.wrapS = this.groundTexture.wrapT = THREE.RepeatWrapping   
+    this.groundTexture.repeat.set( 50, 50 )
+    this.groundTexture.anisotropy = 16
     const groundMaterial = new THREE.MeshLambertMaterial({   
-      map: groundTexture 
+      map: this.groundTexture 
     });
 
     const groundGeometry = new THREE.PlaneGeometry( 20000, 20000 ) 
@@ -404,8 +400,6 @@ export class EngineService {
     const topRama = this.scene.getObjectByName(this.topRama.name);
     const rightRamaWidth = new THREE.Box3().setFromObject(rightRama).getSize(new THREE.Vector3()).x;
 
-    console.log(this.doorHeight, this.doorWidth);
-    
     if (this.doorWidth !== newDoorWidth) {
       leftRama.position.x = newDoorWidth/2-rightRamaWidth;
       rightRama.position.x = -(newDoorWidth/2-rightRamaWidth);
