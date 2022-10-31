@@ -179,5 +179,10 @@ mat-button-toggle-group {
 
 mat-button-toggle {
   flex:1
+}
 
+@media screen and (max-width: 900px) {
+  .faculty-info {
+    width: 100%;
+  }
 }

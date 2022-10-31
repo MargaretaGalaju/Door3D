@@ -57,20 +57,20 @@
     <mat-form-field class="flex-1 mr-2" appearance="fill">
       <label>Culoarea manerului</label>
       
-      <input matInput type="color" (change)="culoareaManeruluiChange($event)">
+      <input matInput type="color" (input)="culoareaManeruluiChange($event)">
     </mat-form-field>
 
     <mat-form-field class="flex-1" appearance="fill">
       <label>Culoarea ramei</label>
       
-      <input matInput type="color" (change)="culoareaRameiChange($event)">
+      <input matInput type="color" (input)="culoareaRameiChange($event)">
     </mat-form-field>
   </div>
 
   <mat-form-field appearance="fill">
     <label>Culoarea usei</label>
     
-    <input matInput type="color"  [value]="'#0a0a0a'" (change)="culoareaUsiiChange($event)">
+    <input matInput type="color"  [value]="'#0a0a0a'" (input)="culoareaUsiiChange($event)">
   </mat-form-field>
 
   <mat-form-field appearance="fill">

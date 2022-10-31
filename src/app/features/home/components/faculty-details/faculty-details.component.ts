@@ -61,7 +61,7 @@ export class FacultyDetailsComponent implements OnInit {
   }
 
   public doorHeightLimit = {
-    min: 1800,
+    min: 1850,
     max: 2500
   }
   
