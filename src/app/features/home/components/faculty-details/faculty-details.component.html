@@ -76,9 +76,9 @@
   <mat-form-field appearance="fill">
     <mat-label>Texturi</mat-label>
     
-    <mat-select (selectionChange)="onTextureChange($event)" [(ngModel)]="selectedTexture" panelClass="test">
-      <mat-option *ngFor="let texture of texturi; let index=index" [value]="texture">
-        {{ index }}
+    <mat-select (selectionChange)="onTextureChange($event.value)" [(ngModel)]="selectedTexture" panelClass="test">
+      <mat-option *ngFor="let texture of texturi; let index=index" [value]="index">
+        {{index+1}} <img [src]="texture+'-small.jpg'" alt="texture" width="200px">
       </mat-option>
     </mat-select>
   </mat-form-field>

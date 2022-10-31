@@ -41,9 +41,8 @@ export class FacultyDetailsComponent implements OnInit {
   doorHeight = 2020;
   selectedTexture;
 
-  public texturi = [
-    'assets/usa/textures/wood.jpeg',
-  ];
+  public texturi = [1,2,3,4,5,6].map((nr) => `assets/usa/textures/lemn${nr}`);
+  loadedTextures =[];
 
   public frontView = true;
 
@@ -64,7 +63,9 @@ export class FacultyDetailsComponent implements OnInit {
     min: 1850,
     max: 2500
   }
-  
+  public manager = new THREE.LoadingManager();
+  texturesAreLoaded = false;
+
   constructor(
     private readonly authService: AuthService,
     private readonly engineService: EngineService,
@@ -96,8 +97,15 @@ export class FacultyDetailsComponent implements OnInit {
       faculty.specialties = [...faculty.specialties].map((specialty) => ({...specialty, isFavorite: favorites?.some((f=> f.id === specialty.id))}))
     });
 
-    const loader = new THREE.TextureLoader();
-    this.textura = loader.load(this.texturi[0]);
+    this.manager = new THREE.LoadingManager();
+    
+    const loader = new THREE.TextureLoader(this.manager);
+
+    this.texturi.forEach((textureUrl) => this.loadedTextures.push(loader.load(`${textureUrl}.jpg`)));
+
+    this.manager.onLoad = ( ) => {
+      this.texturesAreLoaded = true;
+    };
   }
 
   public makeVirtualTour(facultyId: string) {
@@ -110,8 +118,8 @@ export class FacultyDetailsComponent implements OnInit {
     this.engineService.toggleSpotLight(hideSpotLight);
   }
 
-  onTextureChange(textureUrl) {
-    this.engineService.onTextureChange(this.textura)
+  onTextureChange(index) {
+    this.engineService.onTextureChange(this.loadedTextures[index])
   }
 
   culoareaManeruluiChange(event) {

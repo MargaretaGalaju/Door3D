@@ -611,7 +611,8 @@ export class EngineService {
         const material = new THREE.MeshBasicMaterial({
           map: loadedTexture,
         });
-
+        loadedTexture.receiveShadow = true;
+        loadedTexture.castShadow = true;
         loadedTexture.wrapS = THREE.RepeatWrapping;
         loadedTexture.wrapT = THREE.RepeatWrapping;
         loadedTexture.repeat.set(0.5, 0.5);
