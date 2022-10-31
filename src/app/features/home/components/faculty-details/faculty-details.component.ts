@@ -39,6 +39,8 @@ export class FacultyDetailsComponent implements OnInit {
   textura;
   doorWidth = 1090;
   doorHeight = 2020;
+  selectedTexture;
+
   public texturi = [
     'assets/usa/textures/wood.jpeg',
   ];
@@ -116,7 +118,9 @@ export class FacultyDetailsComponent implements OnInit {
     this.engineService.culoareaManeruluiChange(event.srcElement.value);
   }
 
-  culoareaFerestreiChange(event) {
+  culoareaUsiiChange(event) {
+    this.selectedTexture = null;
+    this.cdr.detectChanges()
     this.engineService.culoareaFerestreiChange(event.srcElement.value);
   }
   

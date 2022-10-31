@@ -11,12 +11,12 @@ export class Image3DLoaderService {
   public fbxLoader: FBXLoader;
   public objLoader: OBJLoader;
   
+  constructor() { }
 
-  constructor() { 
-    this.GLTFloader = new GLTFLoader();
-    this.fbxLoader  = new FBXLoader()
-    this.objLoader  = new OBJLoader()
-
+  public createLoaders(manager) {
+    this.GLTFloader = new GLTFLoader(manager);
+    this.fbxLoader = new FBXLoader(manager)
+    this.objLoader = new OBJLoader(manager)
   }
 
   public getGLTFObject(gltfPath: string): Observable<GLTF> {

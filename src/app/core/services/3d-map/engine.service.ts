@@ -99,8 +99,11 @@ export class EngineService {
     this.manager = new THREE.LoadingManager();
     this.groundTexture = new THREE.TextureLoader(this.manager).load('assets/textures/grass.jpg');
     
+    this.objectLoader.createLoaders(this.manager);
+
     this.manager.onLoad = ( ) => {
       this.addGround();
+      this.scene.visible=true;
       this.loadingService.stopLoading();
     };
     
@@ -112,6 +115,7 @@ export class EngineService {
 
   public initSceneConfigurations(): void {
     this.scene = new THREE.Scene();
+    this.scene.visible = false;
 
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvas,
@@ -206,12 +210,14 @@ export class EngineService {
       }
     });
   }
-    
+  
   public culoareaManeruluiChange(color: string) {
     this.manere.forEach((item) => {
-      if (item) {
-        item.material = item.material.clone();
-        item.material.color.set(color);
+      const object: any =  this.scene.getObjectByName(item.name);
+
+      if (object) {
+        object.material = object.material.clone();
+        object.material.color.set(color);
       }
     });
   }

@@ -70,14 +70,13 @@
   <mat-form-field appearance="fill">
     <label>Culoarea usei</label>
     
-    <input matInput type="color"  [value]="'#0a0a0a'" (change)="culoareaFerestreiChange($event)">
+    <input matInput type="color"  [value]="'#0a0a0a'" (change)="culoareaUsiiChange($event)">
   </mat-form-field>
-
 
   <mat-form-field appearance="fill">
     <mat-label>Texturi</mat-label>
     
-    <mat-select (selectionChange)="onTextureChange($event)" panelClass="test">
+    <mat-select (selectionChange)="onTextureChange($event)" [(ngModel)]="selectedTexture" panelClass="test">
       <mat-option *ngFor="let texture of texturi; let index=index" [value]="texture">
         {{ index }}
       </mat-option>
