@@ -81,9 +81,13 @@ export class EngineService {
   openingPosition: 'right' | 'left' = 'right';
   openingSide: 'inside' | 'outside' = 'outside';
 
-  pereteSus;
-  pereteLeft;
-  pereteRight;
+  pereteLeftWidthCoefficient;
+  pereteRightWidthCoefficient;
+  pereteSusScaleCoeff;
+  proportion;
+  totalPereteWidth=0;
+  totalPereteHeight=0;
+
   groundTexture;
   
   constructor(
@@ -344,6 +348,7 @@ export class EngineService {
     const leftRama = this.scene.getObjectByName(this.leftRama.name);
     const rightRama = this.scene.getObjectByName(this.rightRama.name);
     const topRama = this.scene.getObjectByName(this.topRama.name);
+    const PereteSus = this.scene.getObjectByName('PereteSus');
 
     if (this.doorHeight !== newDoorHeight) {
       leftRama.scale.setZ(this.scaleRamaHeightCoefficient*newDoorHeight);
@@ -352,8 +357,7 @@ export class EngineService {
       const rightRamaHeight = new THREE.Box3().setFromObject(rightRama).getSize(new THREE.Vector3()).y;
       const topRamaHeight = new THREE.Box3().setFromObject(topRama).getSize(new THREE.Vector3()).y;
       topRama.position.y = rightRamaHeight-topRamaHeight;
-
-      this.pereteSus.constant = -newDoorHeight-7;
+      PereteSus.scale.setZ(this.pereteSusScaleCoeff*(this.totalPereteHeight-newDoorHeight));
 
       this.heightExtendableParts.forEach((f) => {
         const foaie = this.scene.getObjectByName(f.name);
@@ -376,7 +380,7 @@ export class EngineService {
     } else {
       const spotLightFront = new THREE.SpotLight(0xffa95c, 1);
       spotLightFront.castShadow = true;
-      spotLightFront.position.set(200, 250, 200);
+      spotLightFront.position.set(200, 300, 200);
       spotLightFront.shadow.bias = -0.0001;
       spotLightFront.shadow.mapSize.width = 1024*4;
       spotLightFront.shadow.mapSize.height = 1024*4;
@@ -386,7 +390,7 @@ export class EngineService {
   
       let spotLightBack = spotLightFront.clone();
       spotLightBack.intensity = 0.5;
-      spotLightBack.position.set(200, 250,-200)
+      spotLightBack.position.set(200, 300,-200)
       this.scene.add(spotLightBack)
       this.spotLightBack = spotLightBack;
     }
@@ -406,12 +410,16 @@ export class EngineService {
     const topRama = this.scene.getObjectByName(this.topRama.name);
     const rightRamaWidth = new THREE.Box3().setFromObject(rightRama).getSize(new THREE.Vector3()).x;
 
+    const PereteStanga = this.scene.getObjectByName('PereteStanga');
+    const PereteDreapta = this.scene.getObjectByName('PereteDreapta');
+    
+    const newPereteDreaptaWidth = (this.totalPereteWidth - newDoorWidth + 5)/(this.proportion+1);
+    const newPereteStangaWidth = (this.totalPereteWidth - newDoorWidth + 5 - newPereteDreaptaWidth);
+    
     if (this.doorWidth !== newDoorWidth) {
-      leftRama.position.x = newDoorWidth/2-rightRamaWidth;
-      rightRama.position.x = -(newDoorWidth/2-rightRamaWidth);
+      leftRama.position.x = newDoorWidth/2 - rightRamaWidth;
+      rightRama.position.x = -(newDoorWidth/2 - rightRamaWidth);
       this.doorWidth = newDoorWidth;
-      this.pereteLeft.constant = -newDoorWidth/2;
-      this.pereteRight.constant = -newDoorWidth/2;
       
       topRama.scale.setX(this.scaleWidthCoefficient*newDoorWidth);
 
@@ -420,6 +428,9 @@ export class EngineService {
 
         foaie.scale.setX(f.scaleCoefficient*((newDoorWidth-this.notExtendableWidth)/2));
       });
+
+      PereteStanga.scale.setY(this.pereteLeftWidthCoefficient*newPereteStangaWidth);
+      PereteDreapta.scale.setY(this.pereteRightWidthCoefficient*newPereteDreaptaWidth);
 
       this.manere.forEach((i) => {
         const item = this.scene.getObjectByName(i.name);
@@ -438,7 +449,7 @@ export class EngineService {
   public addDoor() {
     this.renderer.localClippingEnabled = true;
 
-    this.objectLoader.getFBXObject(`assets/usa/full-redenumit.fbx`).pipe(first()).subscribe((obj) => {
+    this.objectLoader.getFBXObject(`assets/usa/full-redenumit-filled1.fbx`).pipe(first()).subscribe((obj) => {
       this.scene.add(obj);
       obj.name = 'casa';
 
@@ -473,6 +484,24 @@ export class EngineService {
           this.usaIntreaga.push(child);
         }
         
+        if (child.name.includes('PereteStanga')) {
+          const width = new THREE.Box3().setFromObject(child).getSize(new THREE.Vector3()).x;
+          this.totalPereteWidth = this.totalPereteWidth+width;
+          this.pereteLeftWidthCoefficient = child.scale.y/width;
+        }
+
+        if (child.name.includes('PereteDreapta')) {
+          const width = new THREE.Box3().setFromObject(child).getSize(new THREE.Vector3()).x;
+          this.totalPereteWidth = this.totalPereteWidth+width;
+          this.pereteRightWidthCoefficient = child.scale.y/width;
+        }
+
+        if (child.name.includes('PereteSus')) {
+          const height = new THREE.Box3().setFromObject(child).getSize(new THREE.Vector3()).y;
+          this.pereteSusScaleCoeff = child.scale.z/height;
+          this.totalPereteHeight = this.totalPereteHeight + height
+        }
+
         if (child.name.includes('Maner')) {
           this.manere.push(child)
           this.usaIntreaga.push(child)
@@ -531,7 +560,13 @@ export class EngineService {
 
       this.doorWidth = Number((this.initLeftPosition - this.initRightPosition + 2*ramaWidth).toFixed(0));
       this.doorHeight = Number((this.topRama.position.y).toFixed(0));
-
+      
+      this.totalPereteWidth = this.totalPereteWidth + this.doorWidth;
+      this.totalPereteHeight = this.totalPereteHeight + this.doorHeight;
+      
+      const PereteDreapta = new THREE.Box3().setFromObject(this.scene.getObjectByName('PereteDreapta')).getSize(new THREE.Vector3());
+      const PereteStanga = new THREE.Box3().setFromObject(this.scene.getObjectByName('PereteStanga')).getSize(new THREE.Vector3());
+      this.proportion = PereteStanga.x / PereteDreapta.x;
       this.calculateNotExtendableWidth(['RamaStanga', 'RamaDreapta', 'Sticla']);
 
       this.scaleRamaHeightCoefficient = this.rightRama.scale.y/this.doorHeight;
@@ -540,7 +575,7 @@ export class EngineService {
       this.controls['target'].copy(boxCenter);
       this.controls.update();
 
-      this.cutFromPerete();
+      // this.cutFromPerete();
     });
   }
 
@@ -556,6 +591,7 @@ export class EngineService {
       {
         plane: new THREE.Plane( new THREE.Vector3( 0, -1, 0 ), this.topRama.position.y+7),
         name: 'PereteSus',
+        negate: true,
       },
       {
         name:  'PereteStanga',
@@ -567,9 +603,9 @@ export class EngineService {
       }
     ];
 
-    this.pereteSus = pereti[0].plane;
-    this.pereteLeft = pereti[1].plane;
-    this.pereteRight = pereti[2].plane;
+    // this.pereteSus = pereti[0].plane;
+    // this.pereteLeft = pereti[1].plane;
+    // this.pereteRight = pereti[2].plane;
 
     pereti.forEach((perete) => {
       let planes = [
@@ -584,9 +620,22 @@ export class EngineService {
         roughness: 0.75,
         clippingPlanes: planes,
         clipShadows: true,
+        // stencilWrite: true,
+        // stencilRef: 0,
+        // stencilFunc: THREE.NotEqualStencilFunc,
+        // stencilFail: THREE.ReplaceStencilOp,
+        // stencilZFail: THREE.ReplaceStencilOp,
+        // stencilZPass: THREE.ReplaceStencilOp,
         shadowSide: THREE.DoubleSide,
       });
+      material.depthWrite = false;
+      // material.depthTest = false;
+      // material.colorWrite = false;
+      material.stencilWrite = true;
+      material.stencilFunc = THREE.AlwaysStencilFunc;
 
+      const helper = new THREE.PlaneHelper( planes[0], 200, 0xffff00 );
+      this.scene.add( helper );  
       const pereteObj: any = this.scene.getObjectByName(perete.name);
       
       pereteObj.material = material;
